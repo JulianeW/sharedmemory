@@ -16,6 +16,10 @@
  * -------------------------------------------------------------- includes --
  */
 
+
+/* The writer reads blocks of data from standard input and copies (“writes”) them
+into a shared memory segment. */
+
 #include "shared.h"
 
 int main (int argc, char *argv[]) {
