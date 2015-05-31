@@ -23,6 +23,62 @@ into a shared memory segment. */
 #include "shared.h"
 
 int main (int argc, char *argv[]) {
+
+
+	/* Create a set containing the two semaphores that are used by the writer and
+reader program to ensure that they alternate in accessing the shared memory
+segment q. The semaphores are initialized so that the writer has first access to
+the shared memory segment. Since the writer creates the semaphore set, it
+must be started before the reader. */ 
+
+	int sem_id;
+
+	sem_id = semgrab
+
+	semid = semget(SEM_KEY, 2, IPC_CREAT | OBJ_PERMS);
+	if (semid == -1)
+		errExit("semget");
+	if (initSemAvailable(semid, WRITE_SEM) == -1)
+		errExit("initSemAvailable");
+	if (initSemInUse(semid, READ_SEM) == -1)
+		errExit("initSemInUse");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int main (int argc, char *argv[]) {
 	/* Holds the maximum amount of elements in the shared memory */
 	int liBufElems = 0;
 	/* The Input Char as int */
