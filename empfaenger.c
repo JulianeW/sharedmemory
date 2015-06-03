@@ -25,21 +25,21 @@ int main (int argc, char *argv[]) {
 	int iInput = -1;
 
 /* Check and Convert Command Line Parameters */
-	if ((liBufElems = CheckAndPrepareParameter(argc, argv)) == MY_RETURN_ERR) return EXIT_FAILURE;
+	if ((liBufElems = CheckAndPrepareParameter(argc, argv)) == RET_ERR) return EXIT_FAILURE;
 
 /* init the resources */
-	if (InitResources(MY_RECEIVER, liBufElems) == MY_RETURN_ERR) return EXIT_FAILURE;
+	if (InitResources(MY_RECEIVER, liBufElems) == RET_ERR) return EXIT_FAILURE;
 
 /* Process the read of shared memory */
 	do {
 /* Wait for the read semaphore */
-		if (WaitForSemaphore() == MY_RETURN_ERR) return EXIT_FAILURE;
+		if (WaitForSemaphore() == RET_ERR) return EXIT_FAILURE;
 
 /* Write to shared memory */
 		iInput = ReadFromSharedMemory();
 
 /* Signal to write Semaphore */
-		if (SignalToSemaphore() == MY_RETURN_ERR) return EXIT_FAILURE;
+		if (SignalToSemaphore() == RET_ERR) return EXIT_FAILURE;
 
 /* Output every int which stands for a char, except EOF */
 		if (iInput != EOF) {
@@ -59,6 +59,6 @@ int main (int argc, char *argv[]) {
 	}
 
 /* Program finished, do Cleanup and return exit state */
-	if (Cleanup() == MY_RETURN_ERR) return EXIT_FAILURE;
+	if (Cleanup() == RET_ERR) return EXIT_FAILURE;
 	else 							return EXIT_SUCCESS;
 }
