@@ -13,7 +13,7 @@
 ## -------------------------------------------------------------- variables --
 ##
 
-OPTFLAGS        = -DDEBUG -O3 -Wall -Werror -Wextra -Wstrict-prototypes -fno-common -pedantic -g
+CFLAGS       = -DDEBUG -O3 -Wall -Werror -Wextra -Wstrict-prototypes -fno-common -pedantic -g
 CC              = gcc
 MAKE            = make
 RM              = rm -f
@@ -22,13 +22,13 @@ CD              = cd
 MV              = mv
 GREP            = grep
 EXCLUDE_PATTERN = footrulewidth
-OBJECTS          = myshared.o empfaenger.o sender.o sem182.0
+OBJECTS          = myshared.o empfaenger.o sender.o empfaenger sender
 
 ##
 ##-------------------------------------------------------------- rules --
 ##
 
-%.o: %.c %.h
+%.o: %.c shared.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 
@@ -37,12 +37,16 @@ OBJECTS          = myshared.o empfaenger.o sender.o sem182.0
 ##
 
 
-all: popentest test-pipe 
+all: empfaenger sender
 
-
+empfaenger: empfaenger.o myshared.o
+	$(CC) $(CFLAGS) -v -o $@ $^ -L . -lsem182
+	
+sender: sender.o myshared.o
+	$(CC) $(CFLAGS) -v -o $@ $^ -L . -lsem182
 
 clean:
-	$(RM) *.o *.h.gch myshared empfaenger sender sem182
+	$(RM) *.o *.h.gch empfaenger sender
 
 clean_doc:
 	$(RM) -r doc/ html/ latex/
