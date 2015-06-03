@@ -23,26 +23,37 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include "sem182.h"
 
 /*
  * ------------------------------------------------------------- defines --
  */
  
-/* Shared Memory Key: 1000 * <uid> + 0 - JPW: 42548 */
+
+
+/* Semaphore write key: 1000 * <uid> + 0 */
 #define KEY_SEMAPHORE_W 42548000
-/* Write Semaphore Key: 1000 * <uid> + 1 - PW: 42548 */
+/* Semaphore read key: 1000 * <uid> + 1 */
 #define KEY_SEMAPHORE_R 42548001
-/* Read Semaphore Key: 1000 * <uid> + 2 - PW: 42548 */
-#define KEY_SHAREDMEM   42548002
+/* Shared memory key: 1000 * <uid> + 2 */
+#define KEY_SHAREDMEM 42548002
 
 
 /* Mode for linking shared memory - ACHTUNG - NOCH ÜBERARBEITEN */
 #define SHM_MODE_READ 1 /* Use shared memory in read mode */
-#define SHM_MODE_RW   0 /* Use shared memory in read/write mode */
+#define SHM_MODE_RW 0 /* Use shared memory in read/write mode */
 
 /* Type of Semaphore*/
 #define WRITE_SEM 1 /* write  */
 #define READ_SEM 0 /* read */
+
+/*
+ * ------------------------------------------------------------- prototypes --
+ */
+
+extern void printf_handling(char * format, ...);
 
 
 #endif
