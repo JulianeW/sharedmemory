@@ -27,3 +27,16 @@ int main(int argc, char * argv[])
 
 
 }
+
+
+extern void printf_handling(char * format, ...)
+{
+	va_list args;
+
+	va_start(args, format);
+
+	if (vprintf(format, args) < 0)
+		error(1, 1, "%d", errno);
+
+	va_end(args);
+}
