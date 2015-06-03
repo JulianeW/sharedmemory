@@ -49,6 +49,11 @@
 #define WRITE_SEM 1 /* write  */
 #define READ_SEM 0 /* read */
 
+/* Return Values */
+#define RET_OK 0    /* when function finishes without errors */
+#define RET_ERR -1  /* when an error occurs */
+
+
 /*
  * ------------------------------------------------------------- prototypes --
  */
