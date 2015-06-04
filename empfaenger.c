@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
 			/* Output and check for output error */
 			if (fputc(input, stdout) == EOF) {
 				print_errno("Error Writing to stdout!");
-				cleanup(CLEANUP_ERROR);
+				cleanup();
 				return EXIT_FAILURE;
 			}
 		}
@@ -61,12 +61,12 @@ int main (int argc, char *argv[])
 	/* flush stdout as it is buffered */
 	if (fflush(stdout) == EOF) {
 		print_errno("Error Writing to stdout!");
-		cleanup(CLEANUP_ERROR);
+		cleanup();
 		return EXIT_FAILURE;
 	}
 
 /* programme finished - clean up and return success if clean up works */
-	if (cleanup(CLEANUP_OK) == -1)
+	if (cleanup() == -1)
 		return EXIT_FAILURE;
 	else
 		return EXIT_SUCCESS;
