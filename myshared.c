@@ -82,6 +82,59 @@ extern int check_get_parameters(const int argc, char * argv[])
 
 }
 
+extern int initialise_resource(const int binary_type, const int mem_elements)
+{
+	/* set global variables accordingly */
+	file_type = binary_type;
+	max_elements_mem = mem_elements;
+	int bin_mode;
+
+	if (binary_type == MY_RECEIVER)
+		bin_mode = SH_MEM_READ;
+	else
+		bin_mode = SH_MEM_RW;
+
+	/* create semaphores */
+	if (create_sem(WRITE_SEM, max_elements_mem) == -1)
+		return -1;
+	if (create_sem(READ_SEM, 0) == -1)
+		return -1;
+	/* create shared memory */
+	if (create_shared_mem(max_elements_mem) == -1)
+		return -1;
+	/* link memory */
+	if (link_shared_mem(bin_mode) == -1)
+		return -1;
+
+	return 0;
+
+}
+
+extern int sem_wait(void)
+{
+
+
+}
+
+extern int signal_sem(void)
+{
+
+
+}
+
+extern void write_to_memory(int input)
+{
+
+
+}
+
+extern int read_from_memory(void)
+{
+
+
+}
+
+
 /**
  *
  * \brief Function: create a semaphore depending on the type
