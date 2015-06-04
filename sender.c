@@ -16,103 +16,54 @@
  * -------------------------------------------------------------- includes --
  */
 
-
-/* The writer reads blocks of data from standard input and copies (“writes”) them
-into a shared memory segment. */
-
 #include "shared.h"
 
-int main (int argc, char *argv[]) {
 
-
-	/* Create a set containing the two semaphores that are used by the writer and
-reader program to ensure that they alternate in accessing the shared memory
-segment q. The semaphores are initialized so that the writer has first access to
-the shared memory segment. Since the writer creates the semaphore set, it
-must be started before the reader. */ 
-
-	int sem_id;
-
-	sem_id = semgrab
-
-	semid = semget(SEM_KEY, 2, IPC_CREAT | OBJ_PERMS);
-	if (semid == -1)
-		errExit("semget");
-	if (initSemAvailable(semid, WRITE_SEM) == -1)
-		errExit("initSemAvailable");
-	if (initSemInUse(semid, READ_SEM) == -1)
-		errExit("initSemInUse");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int main (int argc, char *argv[]) {
+int main (int argc, char *argv[])
+{
 	/* Holds the maximum amount of elements in the shared memory */
-	int liBufElems = 0;
+	int max_elements = 0;
+
 	/* The Input Char as int */
-	int iInput = -1;
+	int input = -1;
 
 	/* Check and Convert Command Line Parameters */
-	if ((liBufElems = CheckAndPrepareParameter(argc, argv)) == RET_ERR) return EXIT_FAILURE;
+	if ((max_elements = check_get_parameters(argc, argv)) == -1)
+			return EXIT_FAILURE;
 
-	/* init the resources */
-	if (InitResources(MY_SENDER, liBufElems) == RET_ERR) return EXIT_FAILURE;
+	/* initialise the resources */
+	if (initialise_resource(MY_SENDER, max_elements) == -1)
+		return EXIT_FAILURE;
 
 	/* Process the read of the input */
 	do {
 		/* Read a char from stdin */
-		iInput = fgetc(stdin);
+		input = fgetc(stdin);
 		
 		/* Wait for the write semaphore */
-		if (WaitForSemaphore() == RET_ERR) return EXIT_FAILURE;
+		if (sem_wait() == -1)
+			return EXIT_FAILURE;
 
 		/* Write to shared memory */
-		WriteToSharedMemory(iInput);
+		write_to_memory(input);
 
-		/* Signal to read Semaphore */
-		if (SignalToSemaphore() == RET_ERR) return EXIT_FAILURE;
+		/* Signal Semaphore */
+		if (signal_sem() == -1)
+			return EXIT_FAILURE;
 
-	} while (iInput != EOF);
+	} while (input != EOF);
 
 	/* Check for Input error or EOF */
 	if (ferror(stdin)) {
-		HANDLEERRORERRNO("Error Reading from stdin!");
+		print_errno("Error Reading from stdin!");
+		cleanup(CLEANUP_ERROR)
 		return EXIT_FAILURE;
 	}
 
 	/* Program finished, do Cleanup and return exit state */
-	if (Cleanup() == RET_ERR) return EXIT_FAILURE;
-	else 							return EXIT_SUCCESS;
+	if (cleanup(CLEANUP_OK) == -1)
+		return EXIT_FAILURE;
+	else
+		return EXIT_SUCCESS;
 }
+
