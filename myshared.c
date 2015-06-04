@@ -127,7 +127,7 @@ extern int sem_wait(void)
 		if (errno != EINTR)
 		{
 			print_errno("Error waiting for semaphore: ");
-			cleanup(CLEANUP_ERROR);
+			cleanup();
 		}
 		errno = 0;
 
@@ -151,7 +151,7 @@ extern int signal_sem(void)
 		if (V(my_sem) == -1)
 		{
 			print_errno("Error Signaling Semaphore: ");
-			cleanup(CLEANUP_ERROR);
+			cleanup();
 			return -1;
 		}
 	return 0;
@@ -214,14 +214,14 @@ extern int create_sem(const int type, const int init_value)
 			if ((sem_id = samgrab(type)) == -1);
 			{
 				print_errno("Error grabbing semaphore.");
-				cleanup(CLEANUP_ERROR);
+				cleanup();
 				return -1;
 			}
 		}
 		else /* error creating the semaphore */
 		{
 			print_errno("Error creating semaphore.");
-			cleanup(CLEANUP_ERROR);
+			cleanup();
 			return -1;
 		}
 	}
@@ -249,7 +249,7 @@ extern int create_shared_mem(const int buffersize)
 	if ((shared_mem_id = shmget(KEY_SHAREDMEM, sizeof(int) * buffersize, 0660|IPC_CREAT)) == -1)
 	{
 		print_errno("Error creating semaphore.");
-		cleanup(CLEANUP_ERROR);
+		cleanup();
 		return -1;
 	}
 
@@ -277,7 +277,7 @@ extern int link_shared_mem(const int mode)
 	if ((shared_mem = shmat(shared_mem_id, NULL, sh_mode)) == (int *)-1)
 	{
 		print_errno("Could not link memory.");
-		cleanup(CLEANUP_ERROR);
+		cleanup();
 		return -1;
 	}
 
@@ -343,7 +343,7 @@ extern int remove_shared_mem(void)
 
 }
 
-extern int cleanup(const int clean_mode)
+extern int cleanup(void)
 {
 	int error_status = 0;
 
@@ -355,7 +355,7 @@ extern int cleanup(const int clean_mode)
 	}
 
 	/* only remove everything if we are in receiver process or in case of an error */
-	if (file_type == MY_RECEIVER || clean_mode == CLEANUP_ERROR)
+	if (file_type == MY_RECEIVER)
 	{
 		/* remove shared memory if it has been created */
 		if (shared_mem_id != -1)
