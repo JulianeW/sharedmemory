@@ -237,14 +237,59 @@ extern int remove_sem(const int type)
 
 extern int remove_shared_mem(void)
 {
+	errno = 0;
 
+	if (shmctl(shared_mem_id, IPC_RMID, NULL) == -1)
+	{
+		print_errno();
+		shared_mem_id = -1;
+		return -1;
+	}
+
+	shared_mem_id = -1;
+	return 0;
 
 }
 
 extern int cleanup(const int clean_mode)
 {
+	int error_status = 0;
 
+	/* unlink shared memory if it has been linked already */
+	if (shared_mem != NULL)
+	{
+		if (unlink_shared_mem() == -1)
+			error_status = -1;
+	}
 
+	/* only remove everything if we are in receiver process or in case of an error */
+	if (file_type == MY_RECEIVER || clean_mode == CLEANUP_ERROR)
+	{
+		/* remove shared memory if it has been created */
+		if (shared_mem_id != -1)
+		{
+			if (remove_shared_mem() == -1)
+				error_status = -1;
+		}
+		/* remove read and write semaphore if they have been created already */
+		if (write_sem_id != -1)
+		{
+			if (remove_sem(READ_SEM) == -1)
+				error_status = -1;
+		}
+		if (read_sem_id != -1)
+		{
+			if (remove_sem(WRITE_SEM) == -1)
+				error_status = -1;
+		}
+
+	}
+	/* reset variables */
+	file_type = -1;
+	mem_pos = 0;
+	max_elements_mem = -1;
+
+	return error_status;
 }
 
 /**
