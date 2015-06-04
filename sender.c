@@ -56,12 +56,12 @@ int main (int argc, char *argv[])
 	/* Check for Input error or EOF */
 	if (ferror(stdin)) {
 		print_errno("Error Reading from stdin!");
-		cleanup(CLEANUP_ERROR)
+		cleanup()
 		return EXIT_FAILURE;
 	}
 
 	/* Program finished, do Cleanup and return exit state */
-	if (cleanup(CLEANUP_OK) == -1)
+	if (cleanup() == -1)
 		return EXIT_FAILURE;
 	else
 		return EXIT_SUCCESS;
