@@ -1,6 +1,6 @@
 ##
 ##file Makefile
-##Betriebssysteme Makefile für myshared.c, sender.c, empfaenger.c
+##Betriebssysteme Makefile für shared.c, sender.c, empfaenger.c
 ##@author Claudia Baierl ic14b003 <claudia.baierl@technikum-wien.at>
 ##@author Rene Elsner ic14b016 <rene.elsner@technikum-wien.at>
 ##@author Juliane Piñeiro-Winkler ic14b059 <juliane.winkler@technikum-wien.at>
@@ -41,8 +41,8 @@ all: empfaenger sender
 empfaenger: empfaenger.o shared.o
 	$(CC) $(OPTFLAGS) empfaenger.o shared.o -lsem182 -o empfaenger
 	
-sender: sender.o myshared.o
-	$(CC) $(OPTFLAGS) sender.o shared.o -lsem182 sender
+sender: sender.o shared.o
+	$(CC) $(OPTFLAGS) sender.o shared.o -lsem182 -o sender
 
 clean:
 	$(RM) *.o *.h.gch empfaenger sender
