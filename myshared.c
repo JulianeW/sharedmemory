@@ -84,10 +84,13 @@ extern int check_get_parameters(const int argc, char * argv[])
 
 extern int initialise_resource(const int binary_type, const int mem_elements)
 {
+
+	int bin_mode;
+
 	/* set global variables accordingly */
 	file_type = binary_type;
 	max_elements_mem = mem_elements;
-	int bin_mode;
+
 
 	if (binary_type == MY_RECEIVER)
 		bin_mode = SH_MEM_READ;
@@ -194,9 +197,9 @@ extern int read_from_memory(void)
  */
 extern int create_sem(const int type, const int init_value)
 {
+	int sem_key;
 	int sem_id = -1;
 	errno = 0;
-	int sem_key;
 
 	/* check for type before creating semaphore */
 	if (type == WRITE_SEM)
@@ -266,8 +269,8 @@ extern int create_shared_mem(const int buffersize)
  */
 extern int link_shared_mem(const int mode)
 {
-	errno = 0;
 	int sh_mode;
+	errno = 0;
 
 	if (mode == SH_MEM_READ)
 		sh_mode = SHM_RDONLY;
@@ -301,8 +304,8 @@ extern int unlink_shared_mem(void)
 
 extern int remove_sem(const int type)
 {
-	errno = 0;
 	int sem_type;
+	errno = 0;
 
 	if (type == WRITE_SEM)
 		sem_type = write_sem_id;
