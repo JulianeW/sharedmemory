@@ -56,7 +56,7 @@ int main (int argc, char *argv[])
 	/* Check for Input error or EOF */
 	if (ferror(stdin)) {
 		print_errno("Error Reading from stdin!");
-		cleanup()
+		cleanup();
 		return EXIT_FAILURE;
 	}
 
