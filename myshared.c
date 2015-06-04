@@ -184,7 +184,7 @@ extern int link_shared_mem(const int mode)
 
 	if ((shared_mem = shmat(shared_mem_id, NULL, sh_mode)) == (int *)-1)
 	{
-		fprintf(stderr "Error creating semaphore: %s", file_name);
+		print_errno();
 		/* ACHTUNG: Hier noch CleanUp machen!!! */
 		return -1;
 	}
@@ -194,14 +194,45 @@ extern int link_shared_mem(const int mode)
 
 extern int unlink_shared_mem(void)
 {
+	errno = 0;
 
+	if (shmdt(shared_mem) == -1)
+	{
+		print_errno();
+		shared_mem = NULL;
+		return -1;
+	}
 
+	shared_mem = NULL;
+	return 0;
 }
 
 extern int remove_sem(const int type)
 {
+	errno = 0;
+	int sem_type;
 
+	if (type == WRITE_SEM)
+		sem_type = write_sem_id;
+	else
+		sem_type = read_sem_id;
 
+	if (semrm(sem_type) == -1)
+	{
+		print_errno();
+		/* reset globals */
+		if (type == WRITE_SEM)
+			write_sem_id = -1;
+		else
+			read_sem_id = -1;
+		return -1;
+	}
+	if (type == WRITE_SEM)
+		write_sem_id = -1;
+	else
+		read_sem_id = -1;
+
+	return 0;
 }
 
 extern int remove_shared_mem(void)
@@ -245,4 +276,9 @@ extern void printf_handling(char * format, ...)
 		error(1, 1, "%d", errno);
 
 	va_end(args);
+}
+
+extern void print_errno(void)
+{
+	fprintf(stderr, "%s: %s", file_name, strerror(errno));
 }
