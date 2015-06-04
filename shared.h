@@ -85,26 +85,7 @@ extern void print_errno(char * message);
 
 
 
-/*
- * ------------------------------------------------------------- global variables --
- */
 
-/* holds file name */
-char * file_name = NULL;
-/* holds ID of read semaphore */
-int read_sem_id = -1;
-/* holds ID of write semaphore */
-int write_sem_id = -1;
-/* holds ID of shared memory */
-int shared_mem_id = -1;
-/* pointer to shared memory */
-int * shared_mem;
-/* type of sender, receiver */
-int file_type = -1;
-/* position in shared memory */
-int mem_pos = 0;
-/* maximum elements of shared memory */
-int max_elements_mem = -1;
 
 #endif
 
