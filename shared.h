@@ -24,6 +24,7 @@
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <sys/types.h>
 #include "sem182.h"
 
@@ -49,18 +50,42 @@
 #define WRITE_SEM 1 /* write  */
 #define READ_SEM 0 /* read */
 
-/* Return Values */
-#define RET_OK 0    /* when function finishes without errors */
-#define RET_ERR -1  /* when an error occurs */
-
-
 /*
  * ------------------------------------------------------------- prototypes --
  */
 
 extern void printf_handling(char * format, ...);
+extern int check_get_parameters(const int argc, char * argv[]);
+extern int create_sem(const int type, const int init_value);
+extern int create_shared_mem(const int buffersize);
+extern int link_shared_mem(const int mode);
+extern int unlink_shared_mem(void);
+extern int remove_sem(const int type);
+extern int remove_shared_mem(void);
+extern int cleanup(const int clean_mode);
+extern void usage(void);
 
+
+/*
+ * ------------------------------------------------------------- variables --
+ */
+
+/* holds file name */
+extern char * file_name = NULL;
+/* holds ID of read semaphore */
+extern int read_sem_id = -1;
+/* holds ID of write semaphore */
+extern int write_sem_id = -1;
+/* holds ID of shared memory */
+extern int shared_mem_id = -1;
+/* pointer to shared memory */
+extern int * shared_mem;
+/* type of sender, receiver */
+extern int file_type = -1;
+/* position in shared memory */
+extern mem_pos = 0;
+/* maximum elements of shared memory */
+extern int max_elements_mem = 0;
 
 #endif
-
 
