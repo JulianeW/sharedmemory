@@ -59,36 +59,87 @@ extern int check_get_parameters(const int argc, char * argv[])
 				convert = strtol(optarg, &end_pointer, 10);
 				if (errno != 0)
 				{
-					fprintf(stderr "Error converting size of buffer: %s ", strerror(errno));
+					fprintf(stderr "Error converting size of buffer: %s ", file_name);
 					usage();
 					return -1;
 				}
 				/* check conversion and for values greater than 0 and make sure it is smaller than INT_MAX */
 				if (optarg == '\0' || end_pointer != '\0' || convert <= 0 || convert > INT_MAX)
 				{
-					printf_handling("Unknown option!\n");
+					fprintf(stderr "%s: Invalid size of buffer!", file_name);
 					usage();
 					return -1;
 				}
+			break;
 
-
+			default:
+				fprintf(stderr "Unknown option!");
+				usage();
+				return -1;
 		}
 	}
 
+	if (optind < arg)
+	{
+		fprintf(stderr "Unknown option!");
+		usage();
+		return -1;
+	}
 
-
+	return convert;
 
 }
 
-extern void printf_handling(char * format, ...)
-{
-
-
-}
-
+/**
+ *
+ * \brief Function:
+ *
+ * \param type semaphore type (read or write)
+ * \param init_value value for initialisation of semaphore
+ *
+ * \return -1 if there was an error
+ * \return 0 if everything is ok
+ */
 extern int create_sem(const int type, const int init_value)
 {
+	int sem_id = -1;
+	errno = 0;
+	int sem_key = 0;
 
+	/* check for type before creating semaphore */
+	if (type == WRITE_SEM)
+		sem_key = KEY_SEMAPHORE_W;
+	else
+		sem_key = KEY_SEMAPHORE_R;
+
+	/* initialise semaphore */
+	if ((sem_id = seminit(sem_key, 0660, init_value)) == -1)
+	{
+		if (errno == EEXIST)
+		{
+			errno = 0;
+			/* semaphore exits - grab it */
+			if ((sem_id = samgrab(type)) == -1);
+			{
+				fprintf(stderr "Error grabbing semaphore: %s", file_name);
+				/* ACHTUNG: Hier noch CleanUp machen!!! */
+				return -1;
+			}
+		}
+		else /* error creating the semaphore */
+		{
+			fprintf(stderr "Error creating semaphore: %s", file_name);
+			/* ACHTUNG: Hier noch CleanUp machen!!! */
+			return -1;
+		}
+	}
+
+	/* save semaphore id in the right variable */
+	if (type == WRITE_SEM)
+		write_sem_id = sem_id;
+	else
+		read_sem_id = sem_id;
+	return 0;
 
 }
 
