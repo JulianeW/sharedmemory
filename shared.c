@@ -76,7 +76,7 @@ extern int check_get_parameters(const int argc, char * argv[])
 					return -1;
 				}
 				/* check conversion and for values greater than 0 and make sure it is smaller than INT_MAX */
-				if (optarg == '\0' || end_pointer != '\0' || convert <= 0 || convert > INT_MAX)
+				if (optarg == '\0' || *end_pointer != '\0' || convert <= 0 || convert > INT_MAX)
 				{
 					print_errno("Invalid size of buffer!");
 					usage();
