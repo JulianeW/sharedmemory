@@ -55,9 +55,6 @@
 #define MY_SENDER   0 /* Init resources as sender */
 #define MY_RECEIVER 1 /* Init resources as receiver */
 
-/* Cleanup Types */
-#define CLEANUP_ERROR  1 /* Cleanup in error mode */
-#define CLEANUP_OK 0 /* Cleanup in normal mode */
 
 /*
  * ------------------------------------------------------------- prototypes --
@@ -76,7 +73,7 @@ extern int link_shared_mem(const int mode);
 extern int unlink_shared_mem(void);
 extern int remove_sem(const int type);
 extern int remove_shared_mem(void);
-extern int cleanup(const int clean_mode);
+extern int cleanup(void);
 extern void usage(void);
 extern void print_errno(char * message);
 
