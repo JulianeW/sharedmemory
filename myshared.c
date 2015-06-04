@@ -92,7 +92,7 @@ extern int check_get_parameters(const int argc, char * argv[])
 
 /**
  *
- * \brief Function:
+ * \brief Function: create a semaphore depending on the type
  *
  * \param type semaphore type (read or write)
  * \param init_value value for initialisation of semaphore
@@ -142,7 +142,15 @@ extern int create_sem(const int type, const int init_value)
 	return 0;
 
 }
-
+/**
+ *
+ * \brief Function: create a shared memory
+ *
+ * \param buffersize the size of the shared memory
+ *
+ * \return -1 if there was an error
+ * \return 0 if everything is ok
+ */
 extern int create_shared_mem(const int buffersize)
 {
 	errno = 0;
@@ -155,11 +163,33 @@ extern int create_shared_mem(const int buffersize)
 
 	return 0;
 }
-
+/**
+ *
+ * \brief Function links the shared memory
+ *
+ * \param mode mode to link the shared memory (SH_MEM_READ and SH_MEM_RW)
+ *
+ * \return -1 if there was an error
+ * \return 0 if everything is ok
+ */
 extern int link_shared_mem(const int mode)
 {
+	errno = 0;
+	int sh_mode;
 
+	if (mode == SH_MEM_READ)
+		sh_mode = SHM_RDONLY;
+	else
+		sh_mode = 0;
 
+	if ((shared_mem = shmat(shared_mem_id, NULL, sh_mode)) == (int *)-1)
+	{
+		fprintf(stderr "Error creating semaphore: %s", file_name);
+		/* ACHTUNG: Hier noch CleanUp machen!!! */
+		return -1;
+	}
+
+	return 0;
 }
 
 extern int unlink_shared_mem(void)
