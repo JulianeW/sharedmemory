@@ -18,15 +18,7 @@
 
 #include "shared.h"
 
-int main(int argc, char * argv[])
-{
 
-
-
-
-
-
-}
 /**
  *
  * \brief Function: Check the parameters given to the binary and returns the converted
@@ -66,7 +58,7 @@ extern int check_get_parameters(const int argc, char * argv[])
 				/* check conversion and for values greater than 0 and make sure it is smaller than INT_MAX */
 				if (optarg == '\0' || end_pointer != '\0' || convert <= 0 || convert > INT_MAX)
 				{
-					fprintf(stderr "%s: Invalid size of buffer!", file_name);
+					print_errno("Invalid size of buffer!");
 					usage();
 					return -1;
 				}
@@ -121,15 +113,15 @@ extern int create_sem(const int type, const int init_value)
 			/* semaphore exits - grab it */
 			if ((sem_id = samgrab(type)) == -1);
 			{
-				fprintf(stderr "Error grabbing semaphore: %s", file_name);
-				/* ACHTUNG: Hier noch CleanUp machen!!! */
+				print_errno("Error grabbing semaphore.");
+				cleanup(CLEANUP_ERROR);
 				return -1;
 			}
 		}
 		else /* error creating the semaphore */
 		{
-			fprintf(stderr "Error creating semaphore: %s", file_name);
-			/* ACHTUNG: Hier noch CleanUp machen!!! */
+			print_errno("Error creating semaphore.");
+			cleanup(CLEANUP_ERROR);
 			return -1;
 		}
 	}
@@ -156,8 +148,8 @@ extern int create_shared_mem(const int buffersize)
 	errno = 0;
 	if ((shared_mem_id = shmget(KEY_SHAREDMEM, sizeof(int) * buffersize, 0660|IPC_CREAT)) == -1)
 	{
-		fprintf(stderr "Error creating semaphore: %s", file_name);
-		/* ACHTUNG: Hier noch CleanUp machen!!! */
+		print_errno("Error creating semaphore.");
+		cleanup(CLEANUP_ERROR);
 		return -1;
 	}
 
@@ -184,8 +176,8 @@ extern int link_shared_mem(const int mode)
 
 	if ((shared_mem = shmat(shared_mem_id, NULL, sh_mode)) == (int *)-1)
 	{
-		print_errno();
-		/* ACHTUNG: Hier noch CleanUp machen!!! */
+		print_errno("Could not link memory.");
+		cleanup(CLEANUP_ERROR);
 		return -1;
 	}
 
@@ -198,7 +190,7 @@ extern int unlink_shared_mem(void)
 
 	if (shmdt(shared_mem) == -1)
 	{
-		print_errno();
+		print_errno("Could not unlink shared memory.");
 		shared_mem = NULL;
 		return -1;
 	}
@@ -219,7 +211,7 @@ extern int remove_sem(const int type)
 
 	if (semrm(sem_type) == -1)
 	{
-		print_errno();
+		print_errno("Could not remove semaphore.");
 		/* reset globals */
 		if (type == WRITE_SEM)
 			write_sem_id = -1;
@@ -241,7 +233,7 @@ extern int remove_shared_mem(void)
 
 	if (shmctl(shared_mem_id, IPC_RMID, NULL) == -1)
 	{
-		print_errno();
+		print_errno("Could not remove shared memory.");
 		shared_mem_id = -1;
 		return -1;
 	}
@@ -323,7 +315,10 @@ extern void printf_handling(char * format, ...)
 	va_end(args);
 }
 
-extern void print_errno(void)
+extern void print_errno(char * message)
 {
-	fprintf(stderr, "%s: %s", file_name, strerror(errno));
+	if (errno != 0)
+		fprintf(stderr, "%s: %s - %s\n", file_name, message, strerror(errno));
+	else
+		fprintf(stderr, "%s: %s\n", file_name, message);
 }
