@@ -38,11 +38,11 @@ OBJECTS          = myshared.o empfaenger.o sender.o empfaenger sender
 
 all: empfaenger sender
 
-empfaenger: empfaenger.o myshared.o
-	$(CC) $(OPTFLAGS) empfaenger.o myshared.o -lsem182 -o empfaenger
+empfaenger: empfaenger.o shared.o
+	$(CC) $(OPTFLAGS) empfaenger.o shared.o -lsem182 -o empfaenger
 	
 sender: sender.o myshared.o
-	$(CC) $(OPTFLAGS) sender.o myshared.o -lsem182 sender
+	$(CC) $(OPTFLAGS) sender.o shared.o -lsem182 sender
 
 clean:
 	$(RM) *.o *.h.gch empfaenger sender
