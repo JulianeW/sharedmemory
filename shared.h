@@ -1,6 +1,6 @@
 /**
  * @file shared.h
- * Betriebssysteme Headerfile sender.c und empfaenger.c
+ * Betriebssysteme Headerfile sender.c, empfaenger.c und myshared.c
  *
  * @author Claudia Baierl ic14b003 <claudia.baierl@technikum-wien.at>
  * @author Rene Elsner ic14b016 <rene.elsner@technikum-wien.at>
@@ -26,6 +26,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <sys/types.h>
+#include <sys/shm.h>
 #include "sem182.h"
 
 /*
@@ -42,9 +43,9 @@
 #define KEY_SHAREDMEM 42548002
 
 
-/* Mode for linking shared memory - ACHTUNG - NOCH ÜBERARBEITEN */
-#define SHM_MODE_READ 1 /* Use shared memory in read mode */
-#define SHM_MODE_RW 0 /* Use shared memory in read/write mode */
+/* Mode for linking shared memory */
+#define SH_MEM_READ 1 /* Use shared memory in read mode */
+#define SH_MEM_RW 0 /* Use shared memory in read/write mode */
 
 /* Type of Semaphore*/
 #define WRITE_SEM 1 /* write  */
@@ -64,6 +65,8 @@ extern int remove_sem(const int type);
 extern int remove_shared_mem(void);
 extern int cleanup(const int clean_mode);
 extern void usage(void);
+extern void print_errno(void);
+
 
 
 /*
