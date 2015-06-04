@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
 		return EXIT_FAILURE;
 
 	/* initialise resources */
-	if (initialise_resources(MY_RECEIVER, max_elements) == -1)
+	if (initialise_resource(MY_RECEIVER, max_elements) == -1)
 		return EXIT_FAILURE;
 
 	/* Process the read of shared memory */
