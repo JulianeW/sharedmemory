@@ -51,7 +51,7 @@ extern int check_get_parameters(const int argc, char * argv[])
 				convert = strtol(optarg, &end_pointer, 10);
 				if (errno != 0)
 				{
-					fprintf(stderr "Error converting size of buffer: %s ", file_name);
+					print_errno("Error converting size of buffer:");
 					usage();
 					return -1;
 				}
@@ -65,15 +65,15 @@ extern int check_get_parameters(const int argc, char * argv[])
 			break;
 
 			default:
-				fprintf(stderr "Unknown option!");
+				print_errno("Unknown option!");
 				usage();
 				return -1;
 		}
 	}
 
-	if (optind < arg)
+	if (optind < argc)
 	{
-		fprintf(stderr "Unknown option!");
+		print_errno("Unknown option!");
 		usage();
 		return -1;
 	}
@@ -196,7 +196,7 @@ extern int create_sem(const int type, const int init_value)
 {
 	int sem_id = -1;
 	errno = 0;
-	int sem_key = 0;
+	int sem_key;
 
 	/* check for type before creating semaphore */
 	if (type == WRITE_SEM)
@@ -211,7 +211,7 @@ extern int create_sem(const int type, const int init_value)
 		{
 			errno = 0;
 			/* semaphore exits - grab it */
-			if ((sem_id = samgrab(type)) == -1);
+			if ((sem_id = semgrab(type)) == -1)
 			{
 				print_errno("Error grabbing semaphore.");
 				cleanup();
