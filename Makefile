@@ -21,7 +21,7 @@ DOXYGEN         = doxygen
 CD              = cd
 MV              = mv
 GREP            = grep
-OBJECTS          = myshared.o empfaenger.o sender.o empfaenger sender
+OBJECTS          = shared.o empfaenger.o sender.o empfaenger sender
 
 ##
 ##-------------------------------------------------------------- rules --
