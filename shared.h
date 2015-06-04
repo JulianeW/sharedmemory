@@ -51,12 +51,25 @@
 #define WRITE_SEM 1 /* write  */
 #define READ_SEM 0 /* read */
 
+/* Type of process */
+#define MY_SENDER   0 /* Init resources as sender */
+#define MY_RECEIVER 1 /* Init resources as receiver */
+
+/* Cleanup Types */
+#define CLEANUP_ERROR  1 /* Cleanup in error mode */
+#define CLEANUP_OK 0 /* Cleanup in normal mode */
+
 /*
  * ------------------------------------------------------------- prototypes --
  */
 
 extern void printf_handling(char * format, ...);
 extern int check_get_parameters(const int argc, char * argv[]);
+extern int initialise_resource(const int binary_type, const int mem_elements);
+extern int sem_wait(void);
+extern int signal_sem(void);
+extern void write_to_memory(int input);
+extern int read_from_memory(void);
 extern int create_sem(const int type, const int init_value);
 extern int create_shared_mem(const int buffersize);
 extern int link_shared_mem(const int mode);
@@ -65,7 +78,7 @@ extern int remove_sem(const int type);
 extern int remove_shared_mem(void);
 extern int cleanup(const int clean_mode);
 extern void usage(void);
-extern void print_errno(void);
+extern void print_errno(char * message);
 
 
 
@@ -86,9 +99,9 @@ extern int * shared_mem;
 /* type of sender, receiver */
 extern int file_type = -1;
 /* position in shared memory */
-extern mem_pos = 0;
+extern int mem_pos = 0;
 /* maximum elements of shared memory */
-extern int max_elements_mem = 0;
+extern int max_elements_mem = -1;
 
 #endif
 
