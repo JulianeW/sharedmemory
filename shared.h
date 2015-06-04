@@ -26,8 +26,14 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <sys/types.h>
+#include <sys/ipc.h>
 #include <sys/shm.h>
+#include <error.h>
+#include <limits.h>
 #include "sem182.h"
+#include <ctype.h>
+#include <libgen.h>
+#include <stdarg.h>
 
 /*
  * ------------------------------------------------------------- defines --
@@ -80,25 +86,25 @@ extern void print_errno(char * message);
 
 
 /*
- * ------------------------------------------------------------- variables --
+ * ------------------------------------------------------------- global variables --
  */
 
 /* holds file name */
-extern char * file_name = NULL;
+char * file_name = NULL;
 /* holds ID of read semaphore */
-extern int read_sem_id = -1;
+int read_sem_id = -1;
 /* holds ID of write semaphore */
-extern int write_sem_id = -1;
+int write_sem_id = -1;
 /* holds ID of shared memory */
-extern int shared_mem_id = -1;
+int shared_mem_id = -1;
 /* pointer to shared memory */
-extern int * shared_mem;
+int * shared_mem;
 /* type of sender, receiver */
-extern int file_type = -1;
+int file_type = -1;
 /* position in shared memory */
-extern int mem_pos = 0;
+int mem_pos = 0;
 /* maximum elements of shared memory */
-extern int max_elements_mem = -1;
+int max_elements_mem = -1;
 
 #endif
 
