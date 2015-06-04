@@ -145,8 +145,15 @@ extern int create_sem(const int type, const int init_value)
 
 extern int create_shared_mem(const int buffersize)
 {
+	errno = 0;
+	if ((shared_mem_id = shmget(KEY_SHAREDMEM, sizeof(int) * buffersize, 0660|IPC_CREAT)) == -1)
+	{
+		fprintf(stderr "Error creating semaphore: %s", file_name);
+		/* ACHTUNG: Hier noch CleanUp machen!!! */
+		return -1;
+	}
 
-
+	return 0;
 }
 
 extern int link_shared_mem(const int mode)
