@@ -18,6 +18,26 @@
 
 #include "shared.h"
 
+/*
+ * ------------------------------------------------------------- global variables --
+ */
+
+/* holds file name */
+char * file_name = NULL;
+/* holds ID of read semaphore */
+int read_sem_id = -1;
+/* holds ID of write semaphore */
+int write_sem_id = -1;
+/* holds ID of shared memory */
+int shared_mem_id = -1;
+/* pointer to shared memory */
+int * shared_mem = NULL;
+/* type of sender, receiver */
+int file_type = -1;
+/* position in shared memory */
+int mem_pos = 0;
+/* maximum elements of shared memory */
+int max_elements_mem = -1;
 
 /**
  *
@@ -82,6 +102,16 @@ extern int check_get_parameters(const int argc, char * argv[])
 
 }
 
+/**
+ *
+ * \brief Function initialise all resources (semaphores, shared memory)
+ *
+ * \param binary_type type to initialise
+ * \param mem_elements size of shared memory
+ *
+ * \return -1 if there was an error
+ * \return 0 if successful
+ */
 extern int initialise_resource(const int binary_type, const int mem_elements)
 {
 
@@ -112,7 +142,14 @@ extern int initialise_resource(const int binary_type, const int mem_elements)
 	return 0;
 
 }
-
+/**
+ *
+ * \brief Function let semaphore wait
+ *
+ *
+ * \return -1 if there was an error
+ * \return 0 if successful
+ */
 extern int sem_wait(void)
 {
 	/* get semaphore depending on type */
