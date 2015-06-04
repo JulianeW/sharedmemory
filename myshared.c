@@ -112,26 +112,73 @@ extern int initialise_resource(const int binary_type, const int mem_elements)
 
 extern int sem_wait(void)
 {
+	/* get semaphore depending on type */
+	int my_sem;
 
+	if (file_type == MY_SENDER)
+		my_sem = write_sem_id;
+	else
+		my_sem = read_sem_id;
+
+	errno = 0;
+
+	while (P(my_sem) == -1)
+	{
+		if (errno != EINTR)
+		{
+			print_errno("Error waiting for semaphore: ");
+			cleanup(CLEANUP_ERROR);
+		}
+		errno = 0;
+
+	}
+	return 0;
 
 }
 
 extern int signal_sem(void)
 {
+	/* get semaphore depending on type */
+		int my_sem;
 
+		if (file_type == MY_SENDER)
+			my_sem = write_sem_id;
+		else
+			my_sem = read_sem_id;
+
+		errno = 0;
+
+		if (V(my_sem) == -1)
+		{
+			print_errno("Error Signaling Semaphore: ");
+			cleanup(CLEANUP_ERROR);
+			return -1;
+		}
+	return 0;
 
 }
 
 extern void write_to_memory(int input)
 {
-
+	/* write to the offset position within shared memory */
+	*(shared_mem + mem_pos) = input;
+	/* when maximum number of elements in shared memory is reached, reset the position to 0 as it is a circular buffer */
+	if (++mem_pos >= max_elements_mem)
+		mem_pos = 0;
 
 }
 
 extern int read_from_memory(void)
 {
+	int position;
+	position = mem_pos;
 
+	/* when maximum number of elements in shared memory is reached, reset the position to 0 as it is a circular buffer */
+	if (++mem_pos >= max_elements_mem)
+		mem_pos = 0;
 
+	/* read from offset position */
+	return *(shared_mem+position);
 }
 
 
