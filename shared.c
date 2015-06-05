@@ -29,7 +29,7 @@ int read_sem_id = -1;
 /* holds ID of write semaphore */
 int write_sem_id = -1;
 /* holds ID of shared memory */
-int shared_mem_id = -1;
+int shared_mem_id = 0;
 /* pointer to shared memory */
 int * shared_mem = NULL;
 /* type of sender, receiver */
@@ -104,7 +104,7 @@ extern int check_get_parameters(const int argc, char * argv[])
 
 /**
  *
- * \brief Function initialise all resources (semaphores, shared memory)
+ * \brief Function initialise all resources (semaphores, shared memory) and set global variables
  *
  * \param binary_type type to initialise
  * \param mem_elements size of shared memory
@@ -175,7 +175,14 @@ extern int semaphore_wait(void)
 	return 0;
 
 }
-
+/**
+ *
+ * \brief Function send signal to semaphore
+ *
+ *
+ * \return -1 if there was an error
+ * \return 0 if successful
+ */
 extern int signal_sem(void)
 {
 	/* get semaphore depending on type */
@@ -197,7 +204,13 @@ extern int signal_sem(void)
 	return 0;
 
 }
-
+/**
+ *
+ * \brief Function write to shared memory
+ *
+ * \param input what is written to the shared memory
+ *
+ */
 extern void write_to_memory(int input)
 {
 	/* write to the offset position within shared memory */
@@ -207,7 +220,13 @@ extern void write_to_memory(int input)
 		mem_pos = 0;
 
 }
-
+/**
+ *
+ * \brief Function read from the shared memory
+ *
+ *
+ * \return what is to be read from offset position
+ */
 extern int read_from_memory(void)
 {
 	int position;
@@ -251,7 +270,7 @@ extern int create_sem(const int type, const int init_value)
 		if (errno == EEXIST)
 		{
 			errno = 0;
-			/* semaphore exits - grab it */
+			/* semaphore exits so grab it */
 
 			if ((sem_id = semgrab(sem_key)) == -1)
 			{
@@ -288,9 +307,10 @@ extern int create_sem(const int type, const int init_value)
 extern int create_shared_mem(const int buffersize)
 {
 	errno = 0;
-	if ((shared_mem_id = shmget(KEY_SHAREDMEM, sizeof(int) * buffersize, 0660|IPC_CREAT)) == -1)
+
+	if ((shared_mem_id = shmget(KEY_SHAREDMEM, sizeof(int) * buffersize, 0660|IPC_CREAT|IPC_EXCL)) == -1)
 	{
-		print_errno("Error creating semaphore.");
+		print_errno("Error creating shared memory.");
 		cleanup();
 		return -1;
 	}
@@ -325,7 +345,14 @@ extern int link_shared_mem(const int mode)
 
 	return 0;
 }
-
+/**
+ *
+ * \brief Function unlinks the shared memory
+ *
+ *
+ * \return -1 if there was an error
+ * \return 0 if everything is ok
+ */
 extern int unlink_shared_mem(void)
 {
 	errno = 0;
@@ -340,7 +367,15 @@ extern int unlink_shared_mem(void)
 	shared_mem = NULL;
 	return 0;
 }
-
+/**
+ *
+ * \brief Function removes semphores
+ *
+ * \param type which type of semaphore to remove
+ *
+ * \return -1 if there was an error
+ * \return 0 if everything is ok
+ */
 extern int remove_sem(const int type)
 {
 	int sem_type;
@@ -368,7 +403,14 @@ extern int remove_sem(const int type)
 
 	return 0;
 }
-
+/**
+ *
+ * \brief Function removes shared memory
+ *
+ *
+ * \return -1 if there was an error
+ * \return 0 if everything is ok
+ */
 extern int remove_shared_mem(void)
 {
 	errno = 0;
@@ -384,7 +426,14 @@ extern int remove_shared_mem(void)
 	return 0;
 
 }
-
+/**
+ *
+ * \brief Function for cleanup of shared memory and semaphore
+ *
+ *
+ * \return error status (which is -1 on failure and 0 on success)
+ *
+ */
 extern int cleanup(void)
 {
 	int error_status = 0;
@@ -437,26 +486,15 @@ extern void usage(void)
 	printf_handling("Usage: %s -m <buffer elements>\n", file_name);
 }
 
+
 /**
  *
- * \brief Function error handling of printf
+ * \brief Function printing error messages
  *
- * \param format
- * \param ...
+ * \param message error message
+ *.
  *
  */
-extern void printf_handling(char * format, ...)
-{
-	va_list args;
-
-	va_start(args, format);
-
-	if (vprintf(format, args) < 0)
-		error(1, 1, "%d", errno);
-
-	va_end(args);
-}
-
 extern void print_errno(char * message)
 {
 	if (errno != 0)
