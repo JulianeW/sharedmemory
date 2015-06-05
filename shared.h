@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <semaphore.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -66,10 +67,9 @@
  * ------------------------------------------------------------- prototypes --
  */
 
-extern void printf_handling(char * format, ...);
 extern int check_get_parameters(const int argc, char * argv[]);
 extern int initialise_resource(const int binary_type, const int mem_elements);
-extern int sem_wait(void);
+extern int semaphore_wait(void);
 extern int signal_sem(void);
 extern void write_to_memory(int input);
 extern int read_from_memory(void);
