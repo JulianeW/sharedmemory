@@ -22,10 +22,10 @@ int main (int argc, char *argv[])
 {
 	/* Holds the maximum amount of elements in the shared memory */
 	int max_elements = 0;
-	/* The Input Char as int */
+	/* input character as integer variable */
 	int input = -1;
 
-	/* Check and Convert Command Line Parameters */
+	/* check command line parameters and convert them */
 	if ((max_elements = check_get_parameters(argc, argv)) == -1)
 		return EXIT_FAILURE;
 
@@ -42,15 +42,16 @@ int main (int argc, char *argv[])
 		/* read from shared memory */
 		input = read_from_memory();
 
-		/* Signal to read Semaphore */
+		/* send signal to read Semaphore */
 		if (signal_sem() == -1)
 			return EXIT_FAILURE;
 
-		/* Output every int which stands for a char, except EOF */
+		/* output everything except for eof */
 		if (input != EOF) {
 
 			/* Output and check for output error */
-			if (fputc(input, stdout) == EOF) {
+			if (fputc(input, stdout) == EOF)
+			{
 				print_errno("Error Writing to stdout!");
 				cleanup();
 				return EXIT_FAILURE;
@@ -65,7 +66,7 @@ int main (int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-/* programme finished - clean up and return success if clean up works */
+	/* programme finished - clean up and return success if clean up works */
 	if (cleanup() == -1)
 		return EXIT_FAILURE;
 	else
