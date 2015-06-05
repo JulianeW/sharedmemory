@@ -502,3 +502,22 @@ extern void print_errno(char * message)
 	else
 		fprintf(stderr, "%s: %s\n", file_name, message);
 }
+
+/**
+ *
+ * \brief Function error handling of printf
+ *
+ * \param format
+ * \param ...
+ *
+ */
+
+void printf_handling(char * format, ...)
+{
+	va_list args;
+
+	va_start(args, format);
+
+	if (vprintf(format, args) < 0) error(1, 1, "%d", errno);
+	va_end(args);
+}
