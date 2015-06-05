@@ -41,9 +41,9 @@ int max_elements_mem = -1;
 
 /**
  *
- * \brief Function: Check the parameters given to the binary and returns the converted
- * value for the amount of shared memory slots. Sets also the binaryname
- * to a global variable for error output
+ * \brief Function: check input parameters and return converted value for size of shared memory.
+ * Set programme name to a global variable for error handling.
+ *
  *
  * \param argc the argument count
  * \param argv the pointer to the argument vector
@@ -150,7 +150,7 @@ extern int initialise_resource(const int binary_type, const int mem_elements)
  * \return -1 if there was an error
  * \return 0 if successful
  */
-extern int sem_wait(void)
+extern int semaphore_wait(void)
 {
 	/* get semaphore depending on type */
 	int my_sem;
@@ -235,7 +235,7 @@ extern int read_from_memory(void)
 extern int create_sem(const int type, const int init_value)
 {
 	int sem_key;
-	int sem_id = -1;
+	int sem_id;
 	errno = 0;
 
 	/* check for type before creating semaphore */
@@ -245,13 +245,15 @@ extern int create_sem(const int type, const int init_value)
 		sem_key = KEY_SEMAPHORE_R;
 
 	/* initialise semaphore */
+
 	if ((sem_id = seminit(sem_key, 0660, init_value)) == -1)
 	{
 		if (errno == EEXIST)
 		{
 			errno = 0;
 			/* semaphore exits - grab it */
-			if ((sem_id = semgrab(type)) == -1)
+
+			if ((sem_id = semgrab(sem_key)) == -1)
 			{
 				print_errno("Error grabbing semaphore.");
 				cleanup();
