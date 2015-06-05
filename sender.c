@@ -41,7 +41,7 @@ int main (int argc, char *argv[])
 		input = fgetc(stdin);
 		
 		/* Wait for the write semaphore */
-		if (sem_wait() == -1)
+		if (semaphore_wait() == -1)
 			return EXIT_FAILURE;
 
 		/* Write to shared memory */
