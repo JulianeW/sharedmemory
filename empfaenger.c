@@ -36,7 +36,7 @@ int main (int argc, char *argv[])
 	/* Process the read of shared memory */
 	do {
 		/* Wait for the read semaphore */
-		if (sem_wait() == -1)
+		if (semaphore_wait() == -1)
 			return EXIT_FAILURE;
 
 		/* read from shared memory */
