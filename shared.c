@@ -1,5 +1,5 @@
 /**
- * @file myshared.c
+ * @file shared.c
  * Betriebssysteme Shared Memory
  * Beispiel 3
  *
@@ -41,15 +41,15 @@ int max_elements_mem = -1;
 
 /**
  *
- * \brief Function: check input parameters and return converted value for size of shared memory.
+ * \brief Function to check input parameters and return converted value for size of shared memory.
  * Set programme name to a global variable for error handling.
  *
- *
- * \param argc the argument count
- * \param argv the pointer to the argument vector
+ * \param argc   the argument count
+ * \param argv   the pointer to the argument vector
  *
  * \return -1 if there was an error
  * \return any other return value which is a valid integer
+ *
  */
 extern int check_get_parameters(const int argc, char * argv[])
 {
@@ -99,22 +99,21 @@ extern int check_get_parameters(const int argc, char * argv[])
 	}
 
 	return convert;
-
 }
 
 /**
  *
- * \brief Function initialise all resources (semaphores, shared memory) and set global variables
+ * \brief Function to initialise all resources (semaphores, shared memory) and set global variables
  *
- * \param binary_type type to initialise
- * \param mem_elements size of shared memory
+ * \param binary_type   type to initialise
+ * \param mem_elements  size of shared memory
  *
  * \return -1 if there was an error
  * \return 0 if successful
+ *
  */
 extern int initialise_resource(const int binary_type, const int mem_elements)
 {
-
 	int bin_mode;
 
 	/* set global variables accordingly */
@@ -123,9 +122,13 @@ extern int initialise_resource(const int binary_type, const int mem_elements)
 
 
 	if (binary_type == MY_RECEIVER)
+	{
 		bin_mode = SH_MEM_READ;
+	}
 	else
+	{
 		bin_mode = SH_MEM_RW;
+	}
 
 	/* create semaphores */
 	if (create_sem(WRITE_SEM, max_elements_mem) == -1)
@@ -140,15 +143,16 @@ extern int initialise_resource(const int binary_type, const int mem_elements)
 		return -1;
 
 	return 0;
-
 }
+
 /**
  *
- * \brief Function let semaphore wait
+ * \brief Function to let semaphore wait
  *
  *
  * \return -1 if there was an error
  * \return 0 if successful
+ *
  */
 extern int semaphore_wait(void)
 {
@@ -173,15 +177,15 @@ extern int semaphore_wait(void)
 
 	}
 	return 0;
-
 }
+
 /**
  *
- * \brief Function send signal to semaphore
- *
+ * \brief Function to send signal to semaphore
  *
  * \return -1 if there was an error
  * \return 0 if successful
+ *
  */
 extern int signal_sem(void)
 {
@@ -189,9 +193,13 @@ extern int signal_sem(void)
 		int my_sem;
 
 		if (file_type == MY_SENDER)
+		{
 			my_sem = write_sem_id;
+		}
 		else
+		{
 			my_sem = read_sem_id;
+		}
 
 		errno = 0;
 
@@ -202,13 +210,13 @@ extern int signal_sem(void)
 			return -1;
 		}
 	return 0;
-
 }
+
 /**
  *
  * \brief Function write to shared memory
  *
- * \param input what is written to the shared memory
+ * \param input   what is written to the shared memory
  *
  */
 extern void write_to_memory(int input)
@@ -220,12 +228,13 @@ extern void write_to_memory(int input)
 		mem_pos = 0;
 
 }
+
 /**
  *
- * \brief Function read from the shared memory
- *
- *
+ * \brief Function to read from the shared memory
+ * 
  * \return what is to be read from offset position
+ *
  */
 extern int read_from_memory(void)
 {
@@ -240,16 +249,16 @@ extern int read_from_memory(void)
 	return *(shared_mem+position);
 }
 
-
 /**
  *
- * \brief Function: create a semaphore depending on the type
+ * \brief Function to create a semaphore depending on the type
  *
- * \param type semaphore type (read or write)
- * \param init_value value for initialisation of semaphore
+ * \param type         semaphore type (read or write)
+ * \param init_value   value for initialisation of semaphore
  *
  * \return -1 if there was an error
  * \return 0 if everything is ok
+ *
  */
 extern int create_sem(const int type, const int init_value)
 {
@@ -264,14 +273,13 @@ extern int create_sem(const int type, const int init_value)
 		sem_key = KEY_SEMAPHORE_R;
 
 	/* initialise semaphore */
-
 	if ((sem_id = seminit(sem_key, 0660, init_value)) == -1)
 	{
 		if (errno == EEXIST)
 		{
 			errno = 0;
-			/* semaphore exits so grab it */
 
+			/* grab existing semaphore*/
 			if ((sem_id = semgrab(sem_key)) == -1)
 			{
 				print_errno("Error grabbing semaphore.");
@@ -287,22 +295,27 @@ extern int create_sem(const int type, const int init_value)
 		}
 	}
 
-	/* save semaphore id in the right variable */
+	/* save semaphore ID in the correct variable */
 	if (type == WRITE_SEM)
+	{
 		write_sem_id = sem_id;
+	}
 	else
+	{
 		read_sem_id = sem_id;
+	}
 	return 0;
-
 }
+
 /**
  *
- * \brief Function: create a shared memory
+ * \brief Function to create a shared memory
  *
- * \param buffersize the size of the shared memory
+ * \param buffersize     the size of the shared memory
  *
  * \return -1 if there was an error
  * \return 0 if everything is ok
+ *
  */
 extern int create_shared_mem(const int buffersize)
 {
@@ -317,14 +330,16 @@ extern int create_shared_mem(const int buffersize)
 
 	return 0;
 }
+
 /**
  *
- * \brief Function links the shared memory
+ * \brief Function to link the shared memory
  *
- * \param mode mode to link the shared memory (SH_MEM_READ and SH_MEM_RW)
+ * \param mode     mode to link the shared memory (SH_MEM_READ and SH_MEM_RW)
  *
  * \return -1 if there was an error
  * \return 0 if everything is ok
+ *
  */
 extern int link_shared_mem(const int mode)
 {
@@ -332,9 +347,13 @@ extern int link_shared_mem(const int mode)
 	errno = 0;
 
 	if (mode == SH_MEM_READ)
+	{
 		sh_mode = SHM_RDONLY;
+	}
 	else
+	{
 		sh_mode = 0;
+	}
 
 	if ((shared_mem = shmat(shared_mem_id, NULL, sh_mode)) == (int *)-1)
 	{
@@ -345,13 +364,14 @@ extern int link_shared_mem(const int mode)
 
 	return 0;
 }
+
 /**
  *
- * \brief Function unlinks the shared memory
- *
+ * \brief Function to unlink the shared memory
  *
  * \return -1 if there was an error
  * \return 0 if everything is ok
+ *
  */
 extern int unlink_shared_mem(void)
 {
@@ -367,14 +387,16 @@ extern int unlink_shared_mem(void)
 	shared_mem = NULL;
 	return 0;
 }
+
 /**
  *
  * \brief Function removes semphores
  *
- * \param type which type of semaphore to remove
+ * \param type    which type of semaphore to remove
  *
  * \return -1 if there was an error
  * \return 0 if everything is ok
+ *
  */
 extern int remove_sem(const int type)
 {
@@ -382,34 +404,49 @@ extern int remove_sem(const int type)
 	errno = 0;
 
 	if (type == WRITE_SEM)
+	{
 		sem_type = write_sem_id;
+	}
 	else
+	{
 		sem_type = read_sem_id;
+	}
 
 	if (semrm(sem_type) == -1)
 	{
 		print_errno("Could not remove semaphore.");
+
 		/* reset globals */
 		if (type == WRITE_SEM)
+		{
 			write_sem_id = -1;
+		}
 		else
+		{
 			read_sem_id = -1;
+		}
 		return -1;
 	}
+
 	if (type == WRITE_SEM)
+	{
 		write_sem_id = -1;
+	}
 	else
+	{
 		read_sem_id = -1;
+	}
 
 	return 0;
 }
+
 /**
  *
- * \brief Function removes shared memory
- *
+ * \brief Function to remove shared memory
  *
  * \return -1 if there was an error
  * \return 0 if everything is ok
+ *
  */
 extern int remove_shared_mem(void)
 {
@@ -424,12 +461,11 @@ extern int remove_shared_mem(void)
 
 	shared_mem_id = -1;
 	return 0;
-
 }
+
 /**
  *
  * \brief Function for cleanup of shared memory and semaphore
- *
  *
  * \return error status (which is -1 on failure and 0 on success)
  *
@@ -477,9 +513,10 @@ extern int cleanup(void)
 
 /**
  *
- * \ brief Function prints out the usage message for the programme
+ * \ brief Function that prints out the usage message for the programme
  *
  * \return void
+ *
  */
 extern void usage(void)
 {
@@ -489,18 +526,21 @@ extern void usage(void)
 
 /**
  *
- * \brief Function printing error messages
+ * \brief Function for printing error messages
  *
- * \param message error message
- *.
+ * \param message    error message
  *
  */
 extern void print_errno(char * message)
 {
 	if (errno != 0)
+	{
 		fprintf(stderr, "%s: %s - %s\n", file_name, message, strerror(errno));
+	}
 	else
+	{
 		fprintf(stderr, "%s: %s\n", file_name, message);
+	}
 }
 
 /**
@@ -518,6 +558,7 @@ void printf_handling(char * format, ...)
 
 	va_start(args, format);
 
-	if (vprintf(format, args) < 0) error(1, 1, "%d", errno);
+	if (vprintf(format, args) < 0) 
+		error(1, 1, "%d", errno);
 	va_end(args);
 }

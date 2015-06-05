@@ -18,6 +18,20 @@
 
 #include "shared.h"
 
+/**
+ *
+ * \brief Program that handles the receiver
+ *
+ * This is the entry point of normal C programs.
+ *
+ * \param argc the number of arguments
+ * \param argv the arguments (including the program name in argv[0])
+ *
+ * \return EXIT_SUCCESS if successful
+ * \return EXIT_FAILURE if soemthing goes wrong
+ *
+ */
+
 int main (int argc, char *argv[])
 {
 	/* Holds the maximum amount of elements in the shared memory */
@@ -46,7 +60,7 @@ int main (int argc, char *argv[])
 		if (signal_sem() == -1)
 			return EXIT_FAILURE;
 
-		/* output everything except for eof */
+		/* output everything except for EOF */
 		if (input != EOF) {
 
 			/* Output and check for output error */
@@ -60,7 +74,8 @@ int main (int argc, char *argv[])
 	} while (input != EOF);
 
 	/* flush stdout as it is buffered */
-	if (fflush(stdout) == EOF) {
+	if (fflush(stdout) == EOF)
+	{
 		print_errno("Error Writing to stdout!");
 		cleanup();
 		return EXIT_FAILURE;
@@ -68,7 +83,11 @@ int main (int argc, char *argv[])
 
 	/* programme finished - clean up and return success if clean up works */
 	if (cleanup() == -1)
+	{
 		return EXIT_FAILURE;
+	}
 	else
+	{
 		return EXIT_SUCCESS;
+	}
 }

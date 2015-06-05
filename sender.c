@@ -18,6 +18,19 @@
 
 #include "shared.h"
 
+/**
+ *
+ * \brief Program that handles the sender
+ *
+ * This is the entry point of normal C programs.
+ *
+ * \param argc the number of arguments
+ * \param argv the arguments (including the program name in argv[0])
+ *
+ * \return EXIT_SUCCESS if successful
+ * \return EXIT_FAILURE if soemthing goes wrong
+ *
+ */
 
 int main (int argc, char *argv[])
 {
@@ -29,7 +42,7 @@ int main (int argc, char *argv[])
 
 	/* Check and Convert Command Line Parameters */
 	if ((max_elements = check_get_parameters(argc, argv)) == -1)
-			return EXIT_FAILURE;
+		return EXIT_FAILURE;
 
 	/* initialise the resources */
 	if (initialise_resource(MY_SENDER, max_elements) == -1)
@@ -54,7 +67,8 @@ int main (int argc, char *argv[])
 	} while (input != EOF);
 
 	/* Check for Input error or EOF */
-	if (ferror(stdin)) {
+	if (ferror(stdin)) 
+	{
 		print_errno("Error Reading from stdin!");
 		cleanup();
 		return EXIT_FAILURE;
@@ -62,8 +76,12 @@ int main (int argc, char *argv[])
 
 	/* Program finished, do Cleanup and return exit state */
 	if (cleanup() == -1)
+	{
 		return EXIT_FAILURE;
+	}
 	else
+	{
 		return EXIT_SUCCESS;
+	}
 }
 

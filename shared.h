@@ -55,12 +55,12 @@
 #define SH_MEM_RW 0 /* Use shared memory in read/write mode */
 
 /* Type of Semaphore*/
-#define WRITE_SEM 1 /* write  */
+#define WRITE_SEM 1 /* write */
 #define READ_SEM 0 /* read */
 
 /* Type of process */
-#define MY_SENDER   0 /* Init resources as sender */
-#define MY_RECEIVER 1 /* Init resources as receiver */
+#define MY_SENDER   0 /* Initialise resources as sender */
+#define MY_RECEIVER 1 /* Initialise resources as receiver */
 
 
 /*
@@ -82,10 +82,7 @@ extern int remove_shared_mem(void);
 extern int cleanup(void);
 extern void usage(void);
 extern void print_errno(char * message);
-
-
-
+void printf_handling(char * format, ...);
 
 
 #endif
-
